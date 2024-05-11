@@ -1,8 +1,9 @@
-package com.example.myintermediate
+package com.example.myintermediate.view
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myintermediate.R
 import com.example.myintermediate.databinding.ActivityUserBinding
 
 class UserActivity : AppCompatActivity() {
@@ -18,17 +19,8 @@ class UserActivity : AppCompatActivity() {
         setupView()
     }
 
-    private fun getExtra() {
-        val intent = intent.getStringExtra(MainActivity.CODE_FRAGMENT)
-        if (intent == "10") {
-            setupView()
-        } else if (intent == "20") {
-            setupSignup()
-        }
-    }
-
     private fun setupView() {
-        dataRequest = intent.getIntExtra(MainActivity.CODE_FRAGMENT ,10)
+        dataRequest = intent.getIntExtra(MainActivity.CODE_FRAGMENT,10)
         if (dataRequest == 10) {
             val transaction = supportFragmentManager
             val loginFragment = LoginFragment()
@@ -40,7 +32,7 @@ class UserActivity : AppCompatActivity() {
                 transaction
                     .beginTransaction()
                     .replace(
-                        R.id.fragment_container ,
+                        R.id.fragment_container,
                         loginFragment ,
                         LoginFragment::class.java.simpleName
                     )
@@ -56,30 +48,12 @@ class UserActivity : AppCompatActivity() {
                 fragmentManager
                     .beginTransaction()
                     .replace(
-                        R.id.fragment_container ,
+                        R.id.fragment_container,
                         signupFragment ,
                         SignupFragment::class.java.simpleName
                     )
                     .commit()
             }
-        }
-    }
-
-    private fun setupSignup() {
-        val fragmentManager = supportFragmentManager
-        val signupFragment = SignupFragment()
-        val fragment = fragmentManager.findFragmentByTag(SignupFragment::class.java.simpleName)
-
-        if (fragment !is SignupFragment) {
-            fragmentManager
-                .beginTransaction()
-                .replace(
-                    R.id.fragment_container ,
-                    signupFragment ,
-                    SignupFragment::class.java.simpleName
-                )
-                .addToBackStack(null)
-                .commit()
         }
     }
 }
