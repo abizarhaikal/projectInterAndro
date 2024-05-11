@@ -33,6 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal" />
 
+
     <TextView
         android:id="@+id/messageTextView"
         android:layout_width="0dp"
