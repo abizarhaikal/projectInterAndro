@@ -67,4 +67,14 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.7.0")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    implementation("com.airbnb.android:lottie:6.1.0")
+
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
+
+    implementation("androidx.camera:camera-camera2:1.3.3")
+    implementation("androidx.camera:camera-lifecycle:1.3.3")
+    implementation("androidx.camera:camera-view:1.3.3")
+
 }

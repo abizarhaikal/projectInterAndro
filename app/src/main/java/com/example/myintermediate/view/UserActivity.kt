@@ -14,13 +14,11 @@ class UserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
         setupView()
     }
 
     private fun setupView() {
-        dataRequest = intent.getIntExtra(MainActivity.CODE_FRAGMENT,10)
+        dataRequest = intent.getIntExtra(MainActivity.CODE_FRAGMENT, 10)
         if (dataRequest == 10) {
             val transaction = supportFragmentManager
             val loginFragment = LoginFragment()
@@ -28,18 +26,17 @@ class UserActivity : AppCompatActivity() {
 
 
             if (fragment !is LoginFragment) {
-                Log.d("My LoginFragment" ,"Fragment Name :" + LoginFragment::class.java.simpleName)
+                Log.d("My LoginFragment", "Fragment Name :" + LoginFragment::class.java.simpleName)
                 transaction
                     .beginTransaction()
                     .replace(
                         R.id.fragment_container,
-                        loginFragment ,
+                        loginFragment,
                         LoginFragment::class.java.simpleName
                     )
                     .commit()
             }
-        }
-        else {
+        } else {
             val fragmentManager = supportFragmentManager
             val signupFragment = SignupFragment()
             val fragment = fragmentManager.findFragmentByTag(SignupFragment::class.java.simpleName)
@@ -49,7 +46,7 @@ class UserActivity : AppCompatActivity() {
                     .beginTransaction()
                     .replace(
                         R.id.fragment_container,
-                        signupFragment ,
+                        signupFragment,
                         SignupFragment::class.java.simpleName
                     )
                     .commit()

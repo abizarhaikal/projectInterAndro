@@ -7,9 +7,8 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 
 class MyPasswordText @JvmOverloads constructor(
-    context: Context ,attrs: AttributeSet? = null
+    context: Context, attrs: AttributeSet? = null
 ) : AppCompatEditText(context, attrs) {
-
 
 
     override fun onDraw(canvas: Canvas) {
@@ -18,9 +17,9 @@ class MyPasswordText @JvmOverloads constructor(
     }
 
     override fun onTextChanged(
-        text: CharSequence? ,
-        start: Int ,
-        lengthBefore: Int ,
+        text: CharSequence?,
+        start: Int,
+        lengthBefore: Int,
         lengthAfter: Int
     ) {
         if (text.toString().length < 8) {

@@ -57,6 +57,7 @@ class SignupFragment : Fragment() {
                                 show()
                             }
                         }
+
                         is Result.Error -> {
                             showToast(result.error)
                         }

@@ -16,4 +16,9 @@
     <string name="input_your_password">Input Your Password</string>
     <string name="nama">Nama</string>
     <string name="name">Input your name</string>
+    <string name="add_story">Add Story</string>
+    <string name="description_upload">Masukkan deskripsi</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="upload">Upload</string>
 </resources>

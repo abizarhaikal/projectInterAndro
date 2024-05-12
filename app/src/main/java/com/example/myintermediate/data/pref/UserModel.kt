@@ -1,6 +1,6 @@
 package com.example.myintermediate.data.pref
 
-data class UserModel (
+data class UserModel(
     val email: String,
     val token: String,
     val username: String,

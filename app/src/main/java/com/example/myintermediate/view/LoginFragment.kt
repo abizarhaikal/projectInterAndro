@@ -45,6 +45,7 @@ class LoginFragment : Fragment() {
                         when (result) {
                             is Result.Loading -> {
                                 showToast("Lagi Loading ya!!")
+                                showLoading(true)
                             }
 
                             is Result.Success -> {
@@ -52,12 +53,14 @@ class LoginFragment : Fragment() {
                                 val username = result.data.loginResult.name
                                 loginViewModel.saveSession(UserModel(email.toString(), token, username,true))
                                 val userRepository = Injection.provideRepository(requireActivity())
+                                showLoading(false)
                                 userRepository.update(ApiConfig.getApiService(token))
                                 AlertDialog.Builder(requireActivity()).apply {
                                     setTitle("Login Success")
                                     setMessage("Welcome ${result.data.loginResult.name}")
                                     setPositiveButton("Ok") { _, _ ->
-                                        val intent = Intent(requireActivity(), HomeActivity::class.java)
+                                        val intent =
+                                            Intent(requireActivity(), HomeActivity::class.java)
 
                                         startActivity(intent)
 
@@ -75,11 +78,16 @@ class LoginFragment : Fragment() {
 
                             is Result.Error -> {
                                 showToast(result.error)
+                                showLoading(false)
                             }
                         }
                     }
                 }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     private fun showToast(message: String) {

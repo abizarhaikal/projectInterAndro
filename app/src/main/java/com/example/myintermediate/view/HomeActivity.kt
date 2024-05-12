@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -29,16 +30,29 @@ HomeActivity : AppCompatActivity() {
             if (!session.isLogin) {
                 finish()
                 startActivity(Intent(this@HomeActivity ,MainActivity::class.java))
-            } else {
-                val username = session.username
-                val bundle = Bundle()
-                bundle.putString(HomeFragment.EXTRA_NAME, username)
-
-                Log.d("HomeActivity", "this name is $username")
-
-                val homeFragment = HomeFragment()
-                homeFragment.arguments = bundle
             }
+        }
+
+        val homeFragment = HomeFragment()
+        binding.btnLogout.setOnClickListener {
+            AlertDialog.Builder(this).apply {
+                setTitle("Logout")
+                setMessage("Are you sure want to logout?")
+                setPositiveButton("Yes") { _, _ ->
+                    viewModel.logout()
+                    finish()
+                    supportFragmentManager.beginTransaction().remove(homeFragment).commit()
+                    startActivity(Intent(this@HomeActivity ,MainActivity::class.java))
+                }
+                setNegativeButton("No") { dialog, _ ->
+                    dialog.cancel()
+                }
+                show()
+            }
+//            viewModel.logout()
+//            finish()
+//            supportFragmentManager.beginTransaction().remove(homeFragment).commit()
+//            startActivity(Intent(this@HomeActivity ,MainActivity::class.java))
         }
 
         val navView: BottomNavigationView = binding.navView

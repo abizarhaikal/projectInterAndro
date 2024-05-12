@@ -7,7 +7,7 @@ import com.example.myintermediate.data.pref.UserModel
 import com.example.myintermediate.repository.AuthenticationRepository
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val repository : AuthenticationRepository) : ViewModel() {
+class LoginViewModel(private val repository: AuthenticationRepository) : ViewModel() {
 
     fun saveSession(user: UserModel) {
         viewModelScope.launch {

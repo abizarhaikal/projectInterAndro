@@ -2,10 +2,9 @@ package com.example.myintermediate.data.remote
 
 import com.google.gson.annotations.SerializedName
 
-data class RegisterResponse(
+data class FileUploadResponse (
     @field:SerializedName("error")
     val error: Boolean,
     @field:SerializedName("message")
     val message: String
 )
-

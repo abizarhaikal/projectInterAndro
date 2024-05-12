@@ -10,14 +10,13 @@ import com.example.myintermediate.view.UserActivity
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: AuthenticationRepository) : ViewModel() {
-    fun getSession():LiveData<UserModel> {
+    fun getSession(): LiveData<UserModel> {
         return repository.getSession().asLiveData()
     }
+
     fun logout() {
         viewModelScope.launch {
             repository.logout()
         }
     }
-
-    fun login(email: String, password: String) = repository.login(email, password)
 }
