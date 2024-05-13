@@ -7,16 +7,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.myintermediate.R
 import com.example.myintermediate.Result
 import com.example.myintermediate.ViewModelFactory
 import com.example.myintermediate.databinding.ActivityUploadBinding
@@ -27,8 +23,8 @@ import com.example.myintermediate.view.CameraActivity.Companion.EXTRA_CAMERAX_IM
 import com.example.myintermediate.viewModel.UploadViewModel
 
 class UploadActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityUploadBinding
-    private var currentImageUri : Uri? = null
+    private lateinit var binding: ActivityUploadBinding
+    private var currentImageUri: Uri? = null
     private val uploadViewModel by viewModels<UploadViewModel> {
         ViewModelFactory.getInstance(this)
     }
@@ -36,7 +32,7 @@ class UploadActivity : AppCompatActivity() {
     private val requestPermissionLauncer =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
-        ) {isGranted : Boolean ->
+        ) { isGranted: Boolean ->
             if (isGranted) {
                 showToast("Pemission Granted")
             } else {
@@ -46,9 +42,10 @@ class UploadActivity : AppCompatActivity() {
 
     private fun allPermissionGranted() =
         ContextCompat.checkSelfPermission(
-            this,
+            this ,
             REQUIRED_PERMISSION
         ) == PackageManager.PERMISSION_GRANTED
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUploadBinding.inflate(layoutInflater)
@@ -64,13 +61,13 @@ class UploadActivity : AppCompatActivity() {
     }
 
     private fun startCameraX() {
-        val intent = Intent(this@UploadActivity, CameraActivity::class.java)
+        val intent = Intent(this@UploadActivity ,CameraActivity::class.java)
         launcherIntentCameraX.launch(intent)
     }
 
     private val launcherIntentCameraX = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ){
+    ) {
         if (it.resultCode == CAMERAX_RESULT) {
             currentImageUri = it.data?.getStringExtra(EXTRA_CAMERAX_IMAGE)?.toUri()
             showImage()
@@ -79,19 +76,25 @@ class UploadActivity : AppCompatActivity() {
 
     private fun uploadImage() {
         currentImageUri?.let { uri ->
-            val imageFile = uriToFile(uri, this).reduceFileImage()
-            Log.d("Image File", "show image: ${imageFile.path}")
+            val imageFile = uriToFile(uri ,this).reduceFileImage()
+            Log.d("Image File" ,"show image: ${imageFile.path}")
             val description = binding.edtDescription.text.toString()
 
-            uploadViewModel.uploadImage(imageFile, description).observe(this) {result ->
+            uploadViewModel.uploadImage(imageFile ,description).observe(this) { result ->
                 if (result != null) {
                     when (result) {
                         is Result.Loading -> {
                             showToast("Loading")
                         }
+
                         is Result.Success -> {
                             showToast(result.data.message)
+                            val intent = Intent(this@UploadActivity ,HomeActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+
                         }
+
                         is Result.Error -> {
                             showToast(result.error)
                         }
@@ -104,27 +107,27 @@ class UploadActivity : AppCompatActivity() {
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this ,message ,Toast.LENGTH_SHORT).show()
     }
 
-    private fun startGalerry(){
+    private fun startGalerry() {
         launcherGalery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
     private val launcherGalery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
-    ) {uri: Uri? ->
+    ) { uri: Uri? ->
         if (uri != null) {
             currentImageUri = uri
             showImage()
-        }else {
-            Log.d("Photo Picker", "No media selecter")
+        } else {
+            Log.d("Photo Picker" ,"No media selecter")
         }
     }
 
     private fun showImage() {
         currentImageUri?.let {
-            Log.d("Image Uri", "showImage: $it")
+            Log.d("Image Uri" ,"showImage: $it")
             binding.ivUpload.setImageURI(it)
         }
 

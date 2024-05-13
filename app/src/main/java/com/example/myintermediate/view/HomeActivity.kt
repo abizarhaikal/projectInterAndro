@@ -2,7 +2,6 @@ package com.example.myintermediate.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -60,8 +59,6 @@ HomeActivity : AppCompatActivity() {
         val navContrroller = findNavController(R.id.nav_host_fragment_activity_home)
 
         navView.setupWithNavController(navContrroller)
-
-
     }
 
 }
