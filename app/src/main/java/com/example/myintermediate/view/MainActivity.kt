@@ -60,6 +60,11 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val CODE_FRAGMENT = "10"
-        const val CODE_FRAGMENT_SIGNUP = "20"
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
+
 }

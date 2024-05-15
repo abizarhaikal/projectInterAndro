@@ -79,7 +79,6 @@ class UploadActivity : AppCompatActivity() {
             val imageFile = uriToFile(uri ,this).reduceFileImage()
             Log.d("Image File" ,"show image: ${imageFile.path}")
             val description = binding.edtDescription.text.toString()
-
             uploadViewModel.uploadImage(imageFile ,description).observe(this) { result ->
                 if (result != null) {
                     when (result) {

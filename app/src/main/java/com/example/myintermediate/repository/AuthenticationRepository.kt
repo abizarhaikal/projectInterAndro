@@ -1,17 +1,13 @@
 package com.example.myintermediate.repository
 
-import android.content.Context
 import androidx.lifecycle.liveData
 import com.example.myintermediate.Result
-import com.example.myintermediate.ViewModelFactory
 import com.example.myintermediate.data.pref.UserModel
 import com.example.myintermediate.data.pref.UserPreference
 import com.example.myintermediate.data.remote.ApiService
-import com.example.myintermediate.data.remote.ListStoryItem
 import com.example.myintermediate.data.remote.RegisterResponse
 import com.example.myintermediate.data.remote.ResponseLogin
 import com.example.myintermediate.data.remote.ResponseStory
-import com.example.myintermediate.di.Injection
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaType
@@ -20,7 +16,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 import java.io.File
-import kotlin.coroutines.coroutineContext
 
 class AuthenticationRepository private constructor(
     private var apiService: ApiService, private val userPreference: UserPreference
@@ -83,7 +78,7 @@ class AuthenticationRepository private constructor(
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
             val errorResponse = Gson().fromJson(errorBody, RegisterResponse::class.java)
-            emit((errorResponse.message?.let { Result.Error(it) }))
+            emit((errorResponse.message.let { Result.Error(it) }))
         }
     }
 

@@ -6,7 +6,6 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.myintermediate.data.pref.UserModel
 import com.example.myintermediate.repository.AuthenticationRepository
-import com.example.myintermediate.view.UserActivity
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: AuthenticationRepository) : ViewModel() {

@@ -1,7 +1,9 @@
 package com.example.myintermediate.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myintermediate.R
 import com.example.myintermediate.databinding.ActivityUserBinding
@@ -52,5 +54,16 @@ class UserActivity : AppCompatActivity() {
                     .commit()
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

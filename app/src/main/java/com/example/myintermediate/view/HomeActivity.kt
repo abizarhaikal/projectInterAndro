@@ -2,8 +2,8 @@ package com.example.myintermediate.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -12,6 +12,7 @@ import com.example.myintermediate.ViewModelFactory
 import com.example.myintermediate.databinding.ActivityHomeBinding
 import com.example.myintermediate.viewModel.HomeViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class
 HomeActivity : AppCompatActivity() {
@@ -28,30 +29,27 @@ HomeActivity : AppCompatActivity() {
         viewModel.getSession().observe(this) { session ->
             if (!session.isLogin) {
                 finish()
-                startActivity(Intent(this@HomeActivity ,MainActivity::class.java))
+                startActivity(Intent(this@HomeActivity, MainActivity::class.java))
             }
         }
 
+
         val homeFragment = HomeFragment()
         binding.btnLogout.setOnClickListener {
-            AlertDialog.Builder(this).apply {
+            MaterialAlertDialogBuilder(this).apply {
                 setTitle("Logout")
                 setMessage("Are you sure want to logout?")
                 setPositiveButton("Yes") { _, _ ->
                     viewModel.logout()
                     finish()
                     supportFragmentManager.beginTransaction().remove(homeFragment).commit()
-                    startActivity(Intent(this@HomeActivity ,MainActivity::class.java))
+                    startActivity(Intent(this@HomeActivity, MainActivity::class.java))
                 }
                 setNegativeButton("No") { dialog, _ ->
                     dialog.cancel()
                 }
                 show()
             }
-//            viewModel.logout()
-//            finish()
-//            supportFragmentManager.beginTransaction().remove(homeFragment).commit()
-//            startActivity(Intent(this@HomeActivity ,MainActivity::class.java))
         }
 
         val navView: BottomNavigationView = binding.navView
@@ -59,6 +57,21 @@ HomeActivity : AppCompatActivity() {
         val navContrroller = findNavController(R.id.nav_host_fragment_activity_home)
 
         navView.setupWithNavController(navContrroller)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finishAffinity()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
     }
 
 }

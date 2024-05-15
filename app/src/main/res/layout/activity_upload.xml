@@ -12,12 +12,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <ImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/ivUpload"
             android:layout_width="400dp"
             android:layout_height="300dp"
             android:layout_gravity="center"
-            tools:src="@tools:sample/avatars" />
+            app:lottie_rawRes="@raw/anim_upload"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -29,14 +31,16 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/camera"
-                android:layout_marginEnd="16dp"
+                style="?attr/materialIconButtonOutlinedStyle"
+                app:icon="@drawable/ic_baseline_photo_camera_24"
+                android:layout_marginEnd="6dp"
                 android:id="@+id/btnCamera" />
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gallery"
-                android:layout_marginStart="16dp"
+                style="?attr/materialIconButtonOutlinedStyle"
+                app:icon="@drawable/ic_baseline_image_24"
+                android:layout_marginStart="6dp"
                 android:id="@+id/btnGallery" />
         </LinearLayout>
 
@@ -45,6 +49,8 @@
             android:layout_height="200dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:hint="@string/description_upload"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
              >
@@ -62,7 +68,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/upload"
-            android:id="@+id/btnUpload" />
+            android:id="@+id/btnUpload"
+            android:layout_marginRight="12dp"
+            android:layout_marginLeft="12dp"/>
     </LinearLayout>
 
 </ScrollView>

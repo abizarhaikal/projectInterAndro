@@ -9,6 +9,7 @@ import com.example.myintermediate.viewModel.DetailViewModel
 import com.example.myintermediate.viewModel.HomeFragmentViewModel
 import com.example.myintermediate.viewModel.HomeViewModel
 import com.example.myintermediate.viewModel.LoginViewModel
+import com.example.myintermediate.viewModel.ProfileFragmentViewModel
 import com.example.myintermediate.viewModel.RegisterViewModel
 import com.example.myintermediate.viewModel.UploadViewModel
 
@@ -37,6 +38,9 @@ class ViewModelFactory(private val repository: AuthenticationRepository) :
             }
             modelClass.isAssignableFrom(UploadViewModel::class.java) -> {
                 UploadViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(ProfileFragmentViewModel::class.java) -> {
+                ProfileFragmentViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown View Model class: " + modelClass.name)
         }

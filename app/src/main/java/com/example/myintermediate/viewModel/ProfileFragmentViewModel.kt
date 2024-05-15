@@ -6,11 +6,10 @@ import androidx.lifecycle.asLiveData
 import com.example.myintermediate.data.pref.UserModel
 import com.example.myintermediate.repository.AuthenticationRepository
 
-class HomeFragmentViewModel(private val repository: AuthenticationRepository) : ViewModel() {
+class ProfileFragmentViewModel(private val repository: AuthenticationRepository): ViewModel() {
 
-
-    fun getSession(): LiveData<UserModel> {
+    fun getSession():LiveData<UserModel> {
         return repository.getSession().asLiveData()
     }
-    fun getAll() = repository.getStory()
+
 }

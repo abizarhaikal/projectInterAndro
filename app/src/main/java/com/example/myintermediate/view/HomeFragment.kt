@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -64,6 +63,7 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
+
     }
 
 
@@ -72,19 +72,17 @@ class HomeFragment : Fragment() {
             if (result != null) {
                 when (result) {
                     is Result.Loading -> {
-                        showToast("Loading Nih")
                         isLoading(true)
                     }
 
                     is Result.Success -> {
-                        result.data.message?.let { showToast(it) }
                         result.data.listStory.let { setStory(it) }
                         isLoading(false)
                     }
 
                     is Result.Error -> {
-                        showToast(result.error)
                         isLoading(false)
+                        Log.d("HomeFragment", "this error ${result.error}")
                     }
                 }
             }
@@ -110,13 +108,6 @@ class HomeFragment : Fragment() {
         binding.rvHome.adapter = storyAdapter
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
-    }
-
-    companion object {
-        const val EXTRA_NAME = "extra_name"
-    }
 
     override fun onResume() {
         super.onResume()

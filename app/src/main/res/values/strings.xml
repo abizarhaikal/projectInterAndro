@@ -21,4 +21,5 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="upload">Upload</string>
+    <string name="failed_get_image">Gagal mengambil gambar.</string>
 </resources>

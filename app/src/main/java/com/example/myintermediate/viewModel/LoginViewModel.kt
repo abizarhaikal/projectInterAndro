@@ -1,7 +1,6 @@
 package com.example.myintermediate.viewModel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.myintermediate.data.pref.UserModel
 import com.example.myintermediate.repository.AuthenticationRepository

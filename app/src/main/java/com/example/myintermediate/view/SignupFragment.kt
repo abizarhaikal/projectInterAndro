@@ -1,29 +1,23 @@
 package com.example.myintermediate.view
 
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-
-import com.example.myintermediate.R
 import com.example.myintermediate.Result
 import com.example.myintermediate.ViewModelFactory
 import com.example.myintermediate.databinding.FragmentSignupBinding
 import com.example.myintermediate.viewModel.RegisterViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignupFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SignupFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private lateinit var binding: FragmentSignupBinding
-    private val signupViewModel by viewModels<RegisterViewModel>() {
+    private val signupViewModel by viewModels<RegisterViewModel> {
         ViewModelFactory.getInstance(requireActivity())
     }
 
@@ -45,26 +39,37 @@ class SignupFragment : Fragment() {
                     when (result) {
                         is Result.Loading -> {
                             showToast("Lagi Loading ya!!")
+                            showLoading(true)
                         }
 
                         is Result.Success -> {
-                            AlertDialog.Builder(requireActivity()).apply {
-                                setTitle("Berhasil")
-                                setMessage("Akun Created")
-                                setPositiveButton("Lanjut") { _, _ ->
+                            showLoading(false)
+                            MaterialAlertDialogBuilder(requireActivity())
+                                .setTitle("Account Created")
+                                .setMessage("Account has been created, please login")
+                                .setPositiveButton("Login") { _, _ ->
                                     requireActivity().finish()
-                                }.create()
-                                show()
-                            }
+                                }
+                                .show()
                         }
 
                         is Result.Error -> {
+                            showLoading(false)
                             showToast(result.error)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
+
     }
 
     private fun showToast(message: String) {
@@ -80,6 +85,4 @@ class SignupFragment : Fragment() {
         binding = FragmentSignupBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-
 }

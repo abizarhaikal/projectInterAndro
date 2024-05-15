@@ -3,7 +3,6 @@ package com.example.myintermediate.adapter
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -26,18 +25,16 @@ class StoryAdapter :ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_C
                 val intent = Intent(itemView.context, DetailActivity::class.java)
                 intent.putExtra(DetailActivity.EXTRA_ID, listItem.id.toString())
                 itemView.context.startActivity(intent)
-
-                Toast.makeText(itemView.context, "Kamu memilih ${listItem.id}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryAdapter.MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = ItemHomeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: StoryAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val listItem = getItem(position)
         holder.bind(listItem)
     }

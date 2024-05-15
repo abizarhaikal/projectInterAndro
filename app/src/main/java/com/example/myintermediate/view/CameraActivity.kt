@@ -9,7 +9,6 @@ import android.view.Surface
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -17,8 +16,6 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.myintermediate.R
 import com.example.myintermediate.databinding.ActivityCameraBinding
 import com.example.myintermediate.utils.createCustomTempFile
@@ -97,7 +94,8 @@ class CameraActivity : AppCompatActivity() {
                 }
 
                 override fun onError(exception: ImageCaptureException) {
-                    Toast.makeText(this@CameraActivity, "Gagal mengambil gambar.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CameraActivity,
+                        getString(R.string.failed_get_image), Toast.LENGTH_SHORT).show()
                     Log.e(TAG, "onError: ${exception.message}")
                 }
             }
