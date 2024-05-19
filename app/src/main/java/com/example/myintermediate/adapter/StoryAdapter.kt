@@ -3,6 +3,7 @@ package com.example.myintermediate.adapter
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +12,9 @@ import com.example.myintermediate.data.remote.ListStoryItem
 import com.example.myintermediate.databinding.ItemHomeBinding
 import com.example.myintermediate.view.DetailActivity
 
-class StoryAdapter :ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
-    class MyViewHolder(val binding: ItemHomeBinding) : RecyclerView.ViewHolder(binding.root) {
+class StoryAdapter : PagingDataAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
+    class MyViewHolder(val binding: ItemHomeBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(listItem : ListStoryItem) {
             Glide.with(itemView.context)
                 .load(listItem.photoUrl)
@@ -36,7 +38,9 @@ class StoryAdapter :ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_C
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val listItem = getItem(position)
-        holder.bind(listItem)
+        if (listItem != null) {
+            holder.bind(listItem)
+        }
     }
 
     companion object {

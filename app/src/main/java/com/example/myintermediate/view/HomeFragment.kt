@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myintermediate.Result
 import com.example.myintermediate.ViewModelFactory
+import com.example.myintermediate.adapter.LoadingStateAdapter
 import com.example.myintermediate.adapter.StoryAdapter
 import com.example.myintermediate.data.remote.ListStoryItem
+import com.example.myintermediate.data.remote.Story
 import com.example.myintermediate.databinding.FragmentHomeBinding
 import com.example.myintermediate.viewModel.HomeFragmentViewModel
 
@@ -54,38 +56,28 @@ class HomeFragment : Fragment() {
             val username = session.username
             binding.tvUser.text = username
             Log.d("HomeFragment", "this name $username")
-
         }
         setupData()
-
         binding.fabAdd.setOnClickListener {
             val intent = Intent(requireActivity(), UploadActivity::class.java)
             startActivity(intent)
         }
 
+        binding.rvHome.layoutManager = LinearLayoutManager(requireActivity())
 
     }
-
-
     private fun setupData() {
-        homeFragmentViewModel.getAll().observe(requireActivity()) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        isLoading(true)
-                    }
-
-                    is Result.Success -> {
-                        result.data.listStory.let { setStory(it) }
-                        isLoading(false)
-                    }
-
-                    is Result.Error -> {
-                        isLoading(false)
-                        Log.d("HomeFragment", "this error ${result.error}")
-                    }
-                }
+        storyAdapter = StoryAdapter()
+        binding.rvHome.adapter = storyAdapter
+        binding.rvHome.adapter = storyAdapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                storyAdapter.retry()
             }
+        )
+        isLoading(true)
+        homeFragmentViewModel.story.observe(viewLifecycleOwner) {
+            storyAdapter.submitData(lifecycle, it)
+            isLoading(false)
         }
     }
 
@@ -95,22 +87,11 @@ class HomeFragment : Fragment() {
         } else {
             binding.lotLoading.visibility = View.GONE
         }
-
     }
-
-    private fun setStory(story: List<ListStoryItem?>) {
-        val storyAdapter = StoryAdapter()
-        storyAdapter.submitList(story)
-        val layoutManager = LinearLayoutManager(requireActivity())
-        binding.rvHome.layoutManager = layoutManager
-        val itemDecoration = DividerItemDecoration(requireActivity(), layoutManager.orientation)
-        binding.rvHome.addItemDecoration(itemDecoration)
-        binding.rvHome.adapter = storyAdapter
-    }
-
 
     override fun onResume() {
         super.onResume()
-        homeFragmentViewModel.getAll()
+        homeFragmentViewModel.story
     }
+
 }

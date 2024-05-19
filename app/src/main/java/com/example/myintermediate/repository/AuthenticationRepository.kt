@@ -1,14 +1,22 @@
 package com.example.myintermediate.repository
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.example.myintermediate.Result
+import com.example.myintermediate.data.paging.StoryPagingSource
 import com.example.myintermediate.data.pref.UserModel
 import com.example.myintermediate.data.pref.UserPreference
 import com.example.myintermediate.data.remote.ApiService
+import com.example.myintermediate.data.remote.ListStoryItem
 import com.example.myintermediate.data.remote.RegisterResponse
 import com.example.myintermediate.data.remote.ResponseLogin
 import com.example.myintermediate.data.remote.ResponseStory
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -46,19 +54,30 @@ class AuthenticationRepository private constructor(
     }
 
 
-    fun getStory() = liveData {
-        emit(Result.Loading)
-        try {
-            val successResponse = apiService.getStories()
-            emit(Result.Success(successResponse))
-        } catch (e: HttpException) {
-            val errorBody = e.response()?.errorBody()?.string()
-            val errorResponse = Gson().fromJson(errorBody, ResponseStory::class.java)
-            emit(Result.Error(errorResponse.message.toString()))
-        }
+//    fun getStory() = liveData(Dispatchers.IO) {
+//        emit(Result.Loading)
+//        try {
+//            val successResponse = apiService.getStories()
+//            emit(Result.Success(successResponse))
+//        } catch (e: HttpException) {
+//            val errorBody = e.response()?.errorBody()?.string()
+//            val errorResponse = Gson().fromJson(errorBody, ResponseStory::class.java)
+//            emit(Result.Error(errorResponse.message.toString()))
+//        }
+//    }
+
+    fun getStory(): LiveData<PagingData<ListStoryItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(apiService)
+            }
+        ).liveData
     }
 
-    fun getDetail(id: String) = liveData {
+    fun getDetail(id: String) = liveData(Dispatchers.IO) {
         emit(Result.Loading)
         try {
             val successResponse = apiService.getDetailStories(id)
@@ -82,7 +101,7 @@ class AuthenticationRepository private constructor(
         }
     }
 
-    fun uploadImage(imageFile: File, description: String) = liveData {
+    fun uploadImage(imageFile: File, description: String) = liveData(Dispatchers.IO) {
         emit(Result.Loading)
         val requestBody = description.toRequestBody("text/plain".toMediaType())
         val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
@@ -94,7 +113,7 @@ class AuthenticationRepository private constructor(
         try {
             val successResponse = apiService.uploadImage(imageMultipart, requestBody)
             emit(Result.Success(successResponse))
-        } catch (e : HttpException) {
+        } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
             val errorResponse = Gson().fromJson(errorBody, ResponseStory::class.java)
             emit(Result.Error(errorResponse.message.toString()))

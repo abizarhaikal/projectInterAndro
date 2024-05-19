@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.myintermediate.R
@@ -20,6 +21,8 @@ HomeActivity : AppCompatActivity() {
         ViewModelFactory.getInstance(this)
     }
     private lateinit var binding: ActivityHomeBinding
+
+    var isButton : Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -32,6 +35,7 @@ HomeActivity : AppCompatActivity() {
                 startActivity(Intent(this@HomeActivity, MainActivity::class.java))
             }
         }
+
 
 
         val homeFragment = HomeFragment()
@@ -57,6 +61,30 @@ HomeActivity : AppCompatActivity() {
         val navContrroller = findNavController(R.id.nav_host_fragment_activity_home)
 
         navView.setupWithNavController(navContrroller)
+
+        setupNavigation(navContrroller)
+        setupButton(isButton)
+    }
+
+    private fun setupButton(showButton: Boolean) {
+        isButton = showButton
+        if (showButton) {
+            binding.btnLogout.visibility = android.view.View.VISIBLE
+        } else {
+            binding.btnLogout.visibility = android.view.View.GONE
+        }
+    }
+
+    private fun setupNavigation(navContrroller: NavController) {
+        navContrroller.addOnDestinationChangedListener{_, destination, _ ->
+            when (destination.id) {
+                R.id.nav_home -> {
+                    setupButton(true)
+                } R.id.nav_profile -> {
+                    setupButton(false)
+                }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
