@@ -2,11 +2,14 @@ package com.example.myintermediate.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
 import com.example.myintermediate.Result
+import com.example.myintermediate.data.database.StoryDatabase
+import com.example.myintermediate.data.database.StoryRemoteMediator
 import com.example.myintermediate.data.paging.StoryPagingSource
 import com.example.myintermediate.data.pref.UserModel
 import com.example.myintermediate.data.pref.UserPreference
@@ -26,7 +29,9 @@ import retrofit2.HttpException
 import java.io.File
 
 class AuthenticationRepository private constructor(
-    private var apiService: ApiService, private val userPreference: UserPreference
+    private var apiService: ApiService,
+    private val userPreference: UserPreference,
+    private val storyDatabase: StoryDatabase
 ) {
 
     suspend fun saveSession(user: UserModel) {
@@ -67,12 +72,15 @@ class AuthenticationRepository private constructor(
 //    }
 
     fun getStory(): LiveData<PagingData<ListStoryItem>> {
+        @OptIn(ExperimentalPagingApi::class)
         return Pager(
             config = PagingConfig(
                 pageSize = 5
             ),
+            remoteMediator = StoryRemoteMediator(storyDatabase, apiService),
             pagingSourceFactory = {
-                StoryPagingSource(apiService)
+//                StoryPagingSource(apiService)
+                storyDatabase.storyDao().getAllStory()
             }
         ).liveData
     }
@@ -127,9 +135,9 @@ class AuthenticationRepository private constructor(
     companion object {
         @Volatile
         private var instance: AuthenticationRepository? = null
-        fun getInstance(apiService: ApiService, userPreference: UserPreference) =
+        fun getInstance(apiService: ApiService, userPreference: UserPreference, storyDatabase: StoryDatabase) =
             instance ?: synchronized(this) {
-                instance ?: AuthenticationRepository(apiService, userPreference)
+                instance ?: AuthenticationRepository(apiService, userPreference, storyDatabase)
             }.also { instance = it }
     }
 }

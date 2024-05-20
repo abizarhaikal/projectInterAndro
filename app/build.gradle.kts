@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -81,5 +83,8 @@ dependencies {
 
     implementation("androidx.paging:paging-runtime-ktx:3.3.0")
 
-    implementation("androidx.room:room-paging:2.4.0-rc01")
+    implementation("androidx.room:room-paging:2.6.1")
+    implementation("androidx.room:room-ktx:2.4.0-rc01")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation ("androidx.room:room-runtime:2.6.1")
 }
