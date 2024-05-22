@@ -19,7 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class LoginFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private lateinit var binding: FragmentLoginBinding
     private val loginViewModel by viewModels<LoginViewModel> {
         ViewModelFactory.getInstance(requireActivity())
@@ -91,8 +91,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }

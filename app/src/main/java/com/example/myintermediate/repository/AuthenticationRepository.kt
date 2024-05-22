@@ -10,7 +10,6 @@ import androidx.paging.liveData
 import com.example.myintermediate.Result
 import com.example.myintermediate.data.database.StoryDatabase
 import com.example.myintermediate.data.database.StoryRemoteMediator
-import com.example.myintermediate.data.paging.StoryPagingSource
 import com.example.myintermediate.data.pref.UserModel
 import com.example.myintermediate.data.pref.UserPreference
 import com.example.myintermediate.data.remote.ApiService
@@ -58,19 +57,6 @@ class AuthenticationRepository private constructor(
         }
     }
 
-
-//    fun getStory() = liveData(Dispatchers.IO) {
-//        emit(Result.Loading)
-//        try {
-//            val successResponse = apiService.getStories()
-//            emit(Result.Success(successResponse))
-//        } catch (e: HttpException) {
-//            val errorBody = e.response()?.errorBody()?.string()
-//            val errorResponse = Gson().fromJson(errorBody, ResponseStory::class.java)
-//            emit(Result.Error(errorResponse.message.toString()))
-//        }
-//    }
-
     fun getStory(): LiveData<PagingData<ListStoryItem>> {
         @OptIn(ExperimentalPagingApi::class)
         return Pager(
@@ -79,10 +65,21 @@ class AuthenticationRepository private constructor(
             ),
             remoteMediator = StoryRemoteMediator(storyDatabase, apiService),
             pagingSourceFactory = {
-//                StoryPagingSource(apiService)
                 storyDatabase.storyDao().getAllStory()
             }
         ).liveData
+    }
+
+    fun getUserMap() = liveData {
+        emit(Result.Loading)
+        try {
+            val successResponse = apiService.getStoriesLocation(1)
+            emit(Result.Success(successResponse))
+        } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string()
+            val errorResponse = Gson().fromJson(errorBody, ResponseStory::class.java)
+            emit(Result.Error(errorResponse.message.toString()))
+        }
     }
 
     fun getDetail(id: String) = liveData(Dispatchers.IO) {
@@ -109,24 +106,25 @@ class AuthenticationRepository private constructor(
         }
     }
 
-    fun uploadImage(imageFile: File, description: String) = liveData(Dispatchers.IO) {
-        emit(Result.Loading)
-        val requestBody = description.toRequestBody("text/plain".toMediaType())
-        val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
-        val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-            "photo",
-            imageFile.name,
-            requestImageFile
-        )
-        try {
-            val successResponse = apiService.uploadImage(imageMultipart, requestBody)
-            emit(Result.Success(successResponse))
-        } catch (e: HttpException) {
-            val errorBody = e.response()?.errorBody()?.string()
-            val errorResponse = Gson().fromJson(errorBody, ResponseStory::class.java)
-            emit(Result.Error(errorResponse.message.toString()))
+    fun uploadImage(imageFile: File, description: String, lat: Double, lon: Double) =
+        liveData(Dispatchers.IO) {
+            emit(Result.Loading)
+            val requestBody = description.toRequestBody("text/plain".toMediaType())
+            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                "photo",
+                imageFile.name,
+                requestImageFile
+            )
+            try {
+                val successResponse = apiService.uploadImage(imageMultipart, requestBody, lat, lon)
+                emit(Result.Success(successResponse))
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                val errorResponse = Gson().fromJson(errorBody, ResponseStory::class.java)
+                emit(Result.Error(errorResponse.message.toString()))
+            }
         }
-    }
 
     fun update(apiService: ApiService) {
         this.apiService = apiService
@@ -135,7 +133,11 @@ class AuthenticationRepository private constructor(
     companion object {
         @Volatile
         private var instance: AuthenticationRepository? = null
-        fun getInstance(apiService: ApiService, userPreference: UserPreference, storyDatabase: StoryDatabase) =
+        fun getInstance(
+            apiService: ApiService,
+            userPreference: UserPreference,
+            storyDatabase: StoryDatabase
+        ) =
             instance ?: synchronized(this) {
                 instance ?: AuthenticationRepository(apiService, userPreference, storyDatabase)
             }.also { instance = it }

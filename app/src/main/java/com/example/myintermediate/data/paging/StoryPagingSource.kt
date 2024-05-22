@@ -4,7 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.myintermediate.data.remote.ApiService
 import com.example.myintermediate.data.remote.ListStoryItem
-import com.example.myintermediate.data.remote.ResponseStory
 
 class StoryPagingSource(private val apiService: ApiService) : PagingSource<Int, ListStoryItem>() {
 

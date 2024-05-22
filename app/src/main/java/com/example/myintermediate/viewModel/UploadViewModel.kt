@@ -6,5 +6,5 @@ import java.io.File
 
 class UploadViewModel(private val repository: AuthenticationRepository): ViewModel() {
 
-    fun uploadImage(file: File, description: String) = repository.uploadImage(file, description)
+    fun uploadImage(file: File, description: String, lat: Double, lon:Double) = repository.uploadImage(file, description, lat, lon)
 }

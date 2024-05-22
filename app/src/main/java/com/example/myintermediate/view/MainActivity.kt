@@ -42,9 +42,9 @@ class MainActivity : AppCompatActivity() {
             repeatMode = ObjectAnimator.REVERSE
         }.start()
 
-        val login = ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 0f, 1f).setDuration(100)
-        val signup = ObjectAnimator.ofFloat(binding.btnSignup, View.ALPHA, 0f, 1f).setDuration(100)
-        val title = ObjectAnimator.ofFloat(binding.tvWelcome, View.ALPHA, 0F, 1F).setDuration(100)
+        val login = ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 0f, 1f).setDuration(1000)
+        val signup = ObjectAnimator.ofFloat(binding.btnSignup, View.ALPHA, 0f, 1f).setDuration(1900)
+        val title = ObjectAnimator.ofFloat(binding.tvWelcome, View.ALPHA, 0F, 1F).setDuration(1000)
         val description =
             ObjectAnimator.ofFloat(binding.tvDescription, View.ALPHA, 0F, 1F).setDuration(100)
 

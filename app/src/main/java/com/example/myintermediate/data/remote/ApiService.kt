@@ -33,6 +33,11 @@ interface ApiService {
         @Query("size") size: Int = 20
     ): ResponseStory
 
+    @GET("stories")
+    suspend fun getStoriesLocation(
+        @Query("location") location: Int = 1
+    ): ResponseStory
+
     @GET("stories/{id}")
     suspend fun getDetailStories(
         @Path("id") id: String
@@ -43,5 +48,7 @@ interface ApiService {
     suspend fun uploadImage(
         @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody,
+        @Part("lat") lat: Double,
+        @Part("lon") lon: Double
     ): FileUploadResponse
 }

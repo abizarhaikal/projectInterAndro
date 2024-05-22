@@ -22,7 +22,7 @@ HomeActivity : AppCompatActivity() {
     }
     private lateinit var binding: ActivityHomeBinding
 
-    var isButton : Boolean = false
+    private var isButton : Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)

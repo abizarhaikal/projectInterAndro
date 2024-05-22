@@ -1,9 +1,7 @@
 package com.example.myintermediate.data.database
 
 import androidx.paging.PagingSource
-import androidx.paging.PagingState
 import androidx.room.Dao
-import androidx.room.Database
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query

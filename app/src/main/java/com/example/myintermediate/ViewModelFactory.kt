@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.myintermediate.di.Injection
 import com.example.myintermediate.repository.AuthenticationRepository
+import com.example.myintermediate.view.MapsViewModel
 import com.example.myintermediate.viewModel.DetailViewModel
 import com.example.myintermediate.viewModel.HomeFragmentViewModel
 import com.example.myintermediate.viewModel.HomeViewModel
@@ -41,6 +42,9 @@ class ViewModelFactory(private val repository: AuthenticationRepository) :
             }
             modelClass.isAssignableFrom(ProfileFragmentViewModel::class.java) -> {
                 ProfileFragmentViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
+                MapsViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown View Model class: " + modelClass.name)
         }

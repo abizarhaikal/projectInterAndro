@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myintermediate.databinding.ItemLoadingBinding
 
 class LoadingStateAdapter(private val retry: () -> Unit) :
-LoadStateAdapter<LoadingStateAdapter.LoadingStateViewHolder>()
-{
-    class LoadingStateViewHolder(private val binding : ItemLoadingBinding, retry: () -> Unit): RecyclerView.ViewHolder(binding.root) {
+    LoadStateAdapter<LoadingStateAdapter.LoadingStateViewHolder>() {
+    class LoadingStateViewHolder(private val binding: ItemLoadingBinding, retry: () -> Unit) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
             binding.retryButton.setOnClickListener { retry.invoke() }
         }
@@ -27,7 +27,7 @@ LoadStateAdapter<LoadingStateAdapter.LoadingStateViewHolder>()
     }
 
     override fun onBindViewHolder(
-        holder: LoadingStateAdapter.LoadingStateViewHolder,
+        holder: LoadingStateViewHolder,
         loadState: LoadState
     ) {
         holder.bind(loadState)
@@ -36,9 +36,9 @@ LoadStateAdapter<LoadingStateAdapter.LoadingStateViewHolder>()
     override fun onCreateViewHolder(
         parent: ViewGroup,
         loadState: LoadState
-    ): LoadingStateAdapter.LoadingStateViewHolder {
-        val binding = ItemLoadingBinding.inflate(LayoutInflater.from(parent.context), parent,false)
-        return LoadingStateViewHolder(binding,retry)
+    ): LoadingStateViewHolder {
+        val binding = ItemLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return LoadingStateViewHolder(binding, retry)
     }
 
 }

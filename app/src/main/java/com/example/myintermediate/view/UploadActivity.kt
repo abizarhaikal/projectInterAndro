@@ -3,6 +3,7 @@ package com.example.myintermediate.view
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,8 @@ import com.example.myintermediate.utils.uriToFile
 import com.example.myintermediate.view.CameraActivity.Companion.CAMERAX_RESULT
 import com.example.myintermediate.view.CameraActivity.Companion.EXTRA_CAMERAX_IMAGE
 import com.example.myintermediate.viewModel.UploadViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class UploadActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUploadBinding
@@ -29,39 +32,104 @@ class UploadActivity : AppCompatActivity() {
         ViewModelFactory.getInstance(this)
     }
 
-    private val requestPermissionLauncer =
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                showToast("Pemission Granted")
+                showToast("Permission Granted")
             } else {
                 showToast("Permission Request denied")
             }
         }
 
-    private fun allPermissionGranted() =
+    private fun allPermissionsGranted() =
         ContextCompat.checkSelfPermission(
-            this ,
+            this,
             REQUIRED_PERMISSION
         ) == PackageManager.PERMISSION_GRANTED
+
+    private fun permissionLocationGranted() =
+        ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUploadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (!allPermissionGranted()) {
-            requestPermissionLauncer.launch(REQUIRED_PERMISSION)
+        if (!allPermissionsGranted()) {
+            requestPermissionLauncher.launch(REQUIRED_PERMISSION)
+        }
+        if (!permissionLocationGranted()) {
+            requestPermissionLauncherLocation.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
         }
 
-        binding.btnGallery.setOnClickListener { startGalerry() }
-        binding.btnUpload.setOnClickListener { uploadImage() }
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+        binding.btnGallery.setOnClickListener { startGallery() }
         binding.btnCamera.setOnClickListener { startCameraX() }
+
+        binding.btnUpload.setOnClickListener { uploadImage(0.0, 0.0) }
+
+        binding.switchFeature.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
+                        if (location != null) {
+                            val lon = location.longitude
+                            val lat = location.latitude
+                            Log.d("Location", "onCreate: $lat $lon")
+                            showToast("Feature enabled")
+                            binding.btnUpload.setOnClickListener { uploadImage(lat, lon) }
+                        } else {
+                            showToast("Location is null")
+                        }
+                    }
+                } else {
+                    showToast("Permission not granted")
+                }
+            } else {
+                showToast("Feature disabled")
+                binding.btnUpload.setOnClickListener { uploadImage(0.0, 0.0) }
+            }
+        }
     }
 
+
+    private val requestPermissionLauncherLocation =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permission ->
+            when {
+                permission[Manifest.permission.ACCESS_FINE_LOCATION] ?: false -> {
+                    showToast("Permission granted fine")
+                }
+
+                permission[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                    showToast("Permission granted coarse")
+                }
+            }
+        }
+
+
     private fun startCameraX() {
-        val intent = Intent(this@UploadActivity ,CameraActivity::class.java)
+        val intent = Intent(this@UploadActivity, CameraActivity::class.java)
         launcherIntentCameraX.launch(intent)
     }
 
@@ -74,24 +142,26 @@ class UploadActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadImage() {
+    private fun uploadImage(lat: Double, long: Double) {
         currentImageUri?.let { uri ->
-            val imageFile = uriToFile(uri ,this).reduceFileImage()
-            Log.d("Image File" ,"show image: ${imageFile.path}")
+            val imageFile = uriToFile(uri, this).reduceFileImage()
+            Log.d("Image File", "show image: ${imageFile.path}")
             val description = binding.edtDescription.text.toString()
-            uploadViewModel.uploadImage(imageFile ,description).observe(this) { result ->
+
+            uploadViewModel.uploadImage(imageFile, description, lat, long).observe(this) { result ->
                 if (result != null) {
                     when (result) {
                         is Result.Loading -> {
-                            showToast("Loading")
+                            showToast("Loading...")
+                            Log.d("Loading", "uploadImage: $lat, $long")
                         }
 
                         is Result.Success -> {
                             showToast(result.data.message)
-                            val intent = Intent(this@UploadActivity ,HomeActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            val intent = Intent(this@UploadActivity, HomeActivity::class.java)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
-
                         }
 
                         is Result.Error -> {
@@ -101,35 +171,32 @@ class UploadActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(this ,message ,Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun startGalerry() {
-        launcherGalery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    private fun startGallery() {
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
-    private val launcherGalery = registerForActivityResult(
+    private val launcherGallery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
             currentImageUri = uri
             showImage()
         } else {
-            Log.d("Photo Picker" ,"No media selecter")
+            Log.d("Photo Picker", "No media selected")
         }
     }
 
     private fun showImage() {
         currentImageUri?.let {
-            Log.d("Image Uri" ,"showImage: $it")
+            Log.d("Image Uri", "showImage: $it")
             binding.ivUpload.setImageURI(it)
         }
-
     }
 
     companion object {

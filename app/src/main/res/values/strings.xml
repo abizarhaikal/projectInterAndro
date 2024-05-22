@@ -23,4 +23,14 @@
     <string name="upload">Upload</string>
     <string name="failed_get_image">Gagal mengambil gambar.</string>
     <string name="retry">Retry</string>
+    <string name="title_activity_maps">MapsActivity</string>
+
+
+    <!-- Other string resources -->
+    <string name="description_uploadd">Description</string>
+    <string name="uploadd">Upload</string>
+    <string name="location_permission">Allow access to your location:</string>
+    <string name="enable_location">Enable Location</string>
+
+
 </resources>
